@@ -1,0 +1,284 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --ink: #1f2933;
+  --muted: #657386;
+  --line: #d9e0e8;
+  --accent: #007c89;
+  --accent-strong: #005f6b;
+  --ok: #147a46;
+  --warn: #a45b00;
+  --bad: #b42318;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+main {
+  width: min(1080px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.app-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  line-height: 1.08;
+}
+
+.subtitle {
+  max-width: 640px;
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.status-pill {
+  min-width: 136px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  text-align: center;
+  background: var(--panel);
+}
+
+.status-pill.is-ready {
+  border-color: #8fd0b0;
+  color: var(--ok);
+}
+
+.status-pill.is-error {
+  border-color: #f2aaa4;
+  color: var(--bad);
+}
+
+.toolbar,
+.panel {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #ffffff;
+  background: var(--accent);
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent-strong);
+}
+
+button.secondary {
+  color: var(--ink);
+  border-color: var(--line);
+  background: #ffffff;
+}
+
+button.secondary:hover {
+  background: #eef3f6;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.support-text {
+  max-width: 520px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.scan-grid,
+.diagnostic-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.scan-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.diagnostic-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.metric {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.metric-value {
+  margin-top: 6px;
+  font-size: 1.45rem;
+  font-weight: 760;
+}
+
+.device-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.device-card {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) repeat(5, minmax(84px, 112px));
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.device-card.is-stale {
+  opacity: 0.62;
+}
+
+.device-name {
+  font-weight: 720;
+}
+
+.device-id,
+.device-meta {
+  color: var(--muted);
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
+}
+
+.rssi-strong {
+  color: var(--ok);
+}
+
+.rssi-medium {
+  color: var(--warn);
+}
+
+.rssi-weak {
+  color: var(--bad);
+}
+
+.empty-state {
+  margin-top: 14px;
+  padding: 20px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.navigation-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.position-readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(90px, 120px));
+  gap: 12px;
+}
+
+.debug-text {
+  margin-top: 12px;
+}
+
+.raw-event-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.82rem;
+}
+
+.raw-event-row {
+  display: grid;
+  grid-template-columns: 76px 74px minmax(110px, 1fr) minmax(120px, 1.2fr) 110px minmax(120px, 1.2fr);
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+.raw-event-accepted {
+  border-color: #8fd0b0;
+  color: var(--ok);
+}
+
+.raw-event-row > div {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .app-header,
+  .toolbar,
+  .navigation-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .status-pill {
+    text-align: left;
+  }
+
+  .scan-grid,
+  .diagnostic-grid,
+  .raw-event-row,
+  .device-card {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BLE Indoor Navigation</title>
+    <link rel="stylesheet" href="css/style.css?v=webapi-poc-20260902">
+  </head>
+  <body>
+    <main>
+      <header class="app-header">
+        <div>
+          <h1>BLE Indoor Navigation</h1>
+          <p class="subtitle">Scanner BLE pasif untuk membaca banyak anchor ESP32-C6 dan menghitung posisi dari kumpulan RSSI.</p>
+        </div>
+        <div id="status" class="status-pill">Siap</div>
+      </header>
+
+      <section class="toolbar" aria-label="Kontrol scan BLE">
+        <div class="actions">
+          <button id="startScan" type="button">Mulai Scan BLE</button>
+          <button id="stopScan" class="secondary" type="button" disabled>Stop Scan</button>
+        </div>
+        <p id="supportText" class="support-text"></p>
+      </section>
+
+      <section class="panel" aria-label="Ringkasan navigasi">
+        <div class="scan-grid">
+          <div class="metric">
+            <div class="metric-label">Anchor Aktif</div>
+            <div id="deviceCount" class="metric-value">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Beacon Terdekat</div>
+            <div id="nearestDevice" class="metric-value">-</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">RSSI Terdekat</div>
+            <div id="nearestRssi" class="metric-value">-</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Estimasi Jarak</div>
+            <div id="nearestDistance" class="metric-value">-</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel navigation-panel" aria-label="Estimasi posisi">
+        <div>
+          <h2>Estimasi Posisi</h2>
+          <p id="positionQuality" class="support-text">Butuh minimal satu anchor. Untuk posisi yang lebih masuk akal, pakai tiga anchor atau lebih.</p>
+        </div>
+        <div class="position-readout">
+          <div>
+            <div class="metric-label">X</div>
+            <div id="positionX" class="metric-value">-</div>
+          </div>
+          <div>
+            <div class="metric-label">Y</div>
+            <div id="positionY" class="metric-value">-</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Diagnostik scan BLE">
+        <h2>Diagnostik Scan</h2>
+        <div class="diagnostic-grid">
+          <div class="metric">
+            <div class="metric-label">Paket BLE</div>
+            <div id="rawEventCount" class="metric-value">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Paket ESP</div>
+            <div id="acceptedEventCount" class="metric-value">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Ditolak</div>
+            <div id="rejectedEventCount" class="metric-value">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">RSSI Kosong</div>
+            <div id="noRssiEventCount" class="metric-value">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Event Terakhir</div>
+            <div id="lastEventAge" class="metric-value">-</div>
+          </div>
+        </div>
+        <p id="scanDebugText" class="support-text debug-text">Belum ada sesi scan aktif.</p>
+        <div id="rawEventList" class="raw-event-list"></div>
+      </section>
+
+      <section class="panel" aria-label="Daftar ESP32 BLE">
+        <h2>Anchor ESP32-C6</h2>
+        <div id="emptyState" class="empty-state">Belum ada advertisement ESP32-C6 yang diterima.</div>
+        <div id="deviceList" class="device-list"></div>
+      </section>
+    </main>
+
+    <script type="module" src="js/main.js?v=webapi-poc-20260902"></script>
+  </body>
+</html>
