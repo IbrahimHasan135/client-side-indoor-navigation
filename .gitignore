@@ -1,0 +1,42 @@
+# Python local environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local editor and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Buildozer / python-for-android generated files
+.buildozer/
+**/.buildozer/
+bin/
+**/bin/
+.gradle/
+**/.gradle/
+
+# Android build outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+local.properties
+
+# Local vendored toolchains. Regenerate from README/KIVY_BUILDOZER.md.
+ble-node-apk/tools/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
