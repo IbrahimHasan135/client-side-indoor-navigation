@@ -1,0 +1,50 @@
+Bisa install langsung, tapi lebih bagus pakai Python virtual environment (venv) supaya Buildozer dan dependency Python-nya tidak mengotori system Python Ubuntu.
+
+Di folder project kamu, jalankan:
+
+cd ~/Documents/github/client-side-indoor-navigation/ble-node-apk
+
+sudo apt update
+sudo apt install -y \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    git \
+    zip \
+    unzip \
+    openjdk-17-jdk \
+    autoconf \
+    libtool \
+    pkg-config \
+    zlib1g-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    libtinfo6 \
+    cmake \
+    libffi-dev \
+    libssl-dev
+
+Lalu buat venv:
+
+python3 -m venv .venv
+
+Aktifkan:
+
+source .venv/bin/activate
+
+Kalau aktif, terminal biasanya jadi seperti:
+
+(.venv) ibrohim@ibrahimhasan:~/Documents/github/client-side-indoor-navigation/ble-node-apk$
+
+Kemudian upgrade pip dan install Buildozer:
+
+pip install --upgrade pip setuptools wheel
+pip install buildozer
+
+Cek:
+
+buildozer --version
+
+Kalau sudah muncul versinya, jalankan:
+
+buildozer android debug
