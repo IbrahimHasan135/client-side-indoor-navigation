@@ -25,6 +25,9 @@ class AndroidBleScannerDriver:
         self._error_callback = callback
 
     def start_scan(self) -> None:
+        if self._is_scanning:
+            return
+
         if platform != "android":
             self._emit_error("BLE scan hanya tersedia saat APK berjalan di Android.")
             return
@@ -44,7 +47,10 @@ class AndroidBleScannerDriver:
 
     def stop_scan(self) -> None:
         if self._bridge and self._is_scanning:
-            self._bridge.stop()
+            try:
+                self._bridge.stop()
+            except Exception as exc:
+                self._emit_error(f"Android BLE stop ignored: {exc}")
 
         self._is_scanning = False
 
@@ -66,7 +72,10 @@ class AndroidBleScannerDriver:
 
             @java_method("(Ljava/lang/String;Ljava/lang/String;II[I[[B)V")
             def onAdvertisement(self, address, name, rssi, tx_power, manufacturer_ids, manufacturer_payloads):
-                outer._handle_scan_result(address, name, rssi, tx_power, manufacturer_ids, manufacturer_payloads)
+                try:
+                    outer._handle_scan_result(address, name, rssi, tx_power, manufacturer_ids, manufacturer_payloads)
+                except Exception as exc:
+                    outer._emit_error(f"BLE callback parse error: {exc}")
 
             @java_method("(I)V")
             def onScanFailed(self, error_code):
@@ -94,7 +103,8 @@ class AndroidBleScannerDriver:
         if manufacturer_ids is None or manufacturer_payloads is None:
             return data
 
-        for index in range(len(manufacturer_ids)):
+        count = min(len(manufacturer_ids), len(manufacturer_payloads))
+        for index in range(count):
             data[int(manufacturer_ids[index])] = self._java_bytes_to_python(manufacturer_payloads[index])
         return data
 

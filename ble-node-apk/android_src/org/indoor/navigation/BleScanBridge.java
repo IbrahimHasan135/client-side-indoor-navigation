@@ -7,11 +7,13 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.List;
 
 public class BleScanBridge {
+    private static final String TAG = "BleScanBridge";
     public static final int ERROR_BLUETOOTH_NOT_SUPPORTED = -100;
     public static final int ERROR_BLUETOOTH_DISABLED = -101;
     public static final int ERROR_SCANNER_UNAVAILABLE = -102;
@@ -33,6 +35,10 @@ public class BleScanBridge {
     }
 
     public void start() {
+        if (scanning) {
+            return;
+        }
+
         BluetoothAdapter adapter = getBluetoothAdapter();
         if (adapter == null) {
             listener.onScanFailed(ERROR_BLUETOOTH_NOT_SUPPORTED);
@@ -57,10 +63,15 @@ public class BleScanBridge {
 
     public void stop() {
         if (scanner != null && callback != null && scanning) {
-            scanner.stopScan(callback);
+            try {
+                scanner.stopScan(callback);
+            } catch (RuntimeException exception) {
+                Log.w(TAG, "stopScan ignored runtime exception", exception);
+            }
         }
 
         scanning = false;
+        callback = null;
     }
 
     private ScanCallback createCallback() {
@@ -91,7 +102,7 @@ public class BleScanBridge {
 
         ScanRecord record = result.getScanRecord();
         String address = result.getDevice().getAddress();
-        String name = null;
+        String name = "";
         int txPower = Integer.MIN_VALUE;
         int[] manufacturerIds = new int[0];
         byte[][] manufacturerPayloads = new byte[0][];
@@ -106,7 +117,8 @@ public class BleScanBridge {
                 manufacturerPayloads = new byte[manufacturerData.size()][];
                 for (int index = 0; index < manufacturerData.size(); index++) {
                     manufacturerIds[index] = manufacturerData.keyAt(index);
-                    manufacturerPayloads[index] = manufacturerData.valueAt(index);
+                    byte[] payload = manufacturerData.valueAt(index);
+                    manufacturerPayloads[index] = payload != null ? payload : new byte[0];
                 }
             }
         }
@@ -114,15 +126,25 @@ public class BleScanBridge {
         if (name == null) {
             name = result.getDevice().getName();
         }
+        if (name == null) {
+            name = "";
+        }
+        if (address == null) {
+            address = "";
+        }
 
-        listener.onAdvertisement(
-            address,
-            name,
-            result.getRssi(),
-            txPower,
-            manufacturerIds,
-            manufacturerPayloads
-        );
+        try {
+            listener.onAdvertisement(
+                address,
+                name,
+                result.getRssi(),
+                txPower,
+                manufacturerIds,
+                manufacturerPayloads
+            );
+        } catch (RuntimeException exception) {
+            Log.e(TAG, "Python BLE advertisement callback failed", exception);
+        }
     }
 
     private BluetoothAdapter getBluetoothAdapter() {

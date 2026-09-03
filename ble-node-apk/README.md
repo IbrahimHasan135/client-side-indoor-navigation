@@ -81,6 +81,40 @@ export PIP_BREAK_SYSTEM_PACKAGES=1
 
 Catatan: aplikasi ini butuh Android runtime permission untuk Bluetooth scan dan lokasi. POC foreground dulu, belum background service.
 
+### Kalibrasi RSSI Ke Meter
+
+Kalibrasi awal dari testing lapangan:
+
+```text
+1 meter = sekitar -42 dBm filtered
+2 meter = sekitar -51 dBm filtered
+```
+
+App sekarang memakai nilai ini sebagai `MEASURED_POWER_AT_1M_DBM = -42` di `app/utils/constants.py`. Dari selisih 1 m ke 2 m, `PATH_LOSS_EXPONENT` diset ke `3.0`. Estimator jarak memakai rumus path-loss:
+
+```text
+distance_m = 10 ^ ((measured_power_at_1m - rssi) / (10 * path_loss_exponent))
+```
+
+Dengan konfigurasi sekarang:
+
+```text
+measured_power_at_1m = -42
+path_loss_exponent  = 3.0
+```
+
+Patokan kasar untuk test berikutnya:
+
+```text
+RSSI -33 dBm -> sekitar 0.50 m
+RSSI -42 dBm -> sekitar 1.00 m
+RSSI -51 dBm -> sekitar 2.00 m
+RSSI -54 dBm -> sekitar 2.51 m
+RSSI -57 dBm -> sekitar 3.16 m
+```
+
+RSSI indoor bisa naik-turun karena posisi HP, badan manusia, pantulan tembok, dan orientasi antena ESP32. Untuk kalibrasi berikutnya, ukur beberapa sample di jarak tetap, lalu ambil rata-rata RSSI stabilnya.
+
 ### Konfigurasi Build Penting
 
 Build ini sengaja memakai:
@@ -145,6 +179,12 @@ Could not resolve ... jcenter.bintray.com ... Read timed out
 ```
 
 Diagnosis: template Gradle p4a lama masih memakai `jcenter()`. Fix: salinan p4a lokal di `tools/python-for-android-v2024.01.21` sudah dipatch supaya `build.gradle` memakai `google()` dan `mavenCentral()`.
+
+```text
+JNI DETECTED ERROR IN APPLICATION: GetStringChars received NULL jstring
+```
+
+Diagnosis: beberapa advertisement BLE Android tidak punya device name. Bridge Java lama bisa mengirim `null` untuk parameter `String name` ke Pyjnius, lalu ART Android abort native process. Fix: `BleScanBridge.java` sekarang memastikan `address` dan `name` selalu string non-null, payload manufacturer null diganti byte array kosong, callback Python dibungkus try/catch, dan start/stop scan dibuat idempotent.
 
 Kalau build pernah putus setelah ganti p4a/Python/toolchain dan mulai muncul error aneh dari cache, pindahkan cache build lokal dulu:
 
